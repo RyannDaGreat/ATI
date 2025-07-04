@@ -67,7 +67,7 @@ if [[ "$NGPUS" -eq 1 ]]; then
   python generate.py \
     --ckpt_dir "$CKPT_DIR" \
     --prompt $PROMPT \
-    --save_file "$OUTPUT_DIR/outputs/%03d.mp4"
+    --save_file "$OUTPUT_DIR/outputs"
 else
   echo ">>> Multi‐GPU mode: launching with torchrun"
   torchrun \
@@ -76,7 +76,7 @@ else
     generate.py \
       --ckpt_dir "$CKPT_DIR" \
       --prompt $PROMPT \
-      --save_file "$OUTPUT_DIR/outputs/%03d.mp4" \
+      --save_file "$OUTPUT_DIR/outputs" \
       --ulysses_size "$NGPUS" \
       --base_seed 4567 \
       --dit_fsdp \
