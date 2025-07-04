@@ -343,7 +343,7 @@ def generate(args):
         logging.info(f"Input image: {image}")
 
         #My override
-        save_file = f'{ii:04}--{title}.mp4'
+        save_file = f'{args.save_file}/ATI_{ii:04}--{title}.mp4'
 
         if os.path.exists(save_file):
             logging.info(f"File {save_file} already exists, skipping.")
