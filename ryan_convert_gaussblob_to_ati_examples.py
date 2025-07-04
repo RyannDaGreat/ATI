@@ -5,7 +5,10 @@ import torch
 import rp
 from rp import *
 
-samples_dir = "/home/jupyter/CleanCode/Github/DaS_Trees/gauss_blobs/source/editor/untracked/inferblobs_edit_results"
+samples_dirs = [
+    "/home/jupyter/CleanCode/Github/DaS_Trees/gauss_blobs/source/editor/untracked/inferblobs_edit_results",
+    "/home/jupyter/CleanCode/Github/DaS_Trees/gauss_blobs/source/editor/untracked/inferblobs_test_results",
+]
 examples_root="/home/jupyter/CleanCode/Github/ATI/ryan_examples"
 assert rp.get_current_directory() == "/home/jupyter/CleanCode/Github/ATI"
 
@@ -16,7 +19,7 @@ def sample_dir_hash(sample_dir):
         rp.get_sha256_hash(rp.file_to_bytes(x))
         for x in rp.path_join(sample_dir, ["target_tracks.pth", "counter_video.mp4"])
     )
-sample_dirs = rp.get_subfolders(samples_dir)
+sample_dirs = rp.list_flatten([rp.get_subfolders(samples_dir) for samples_dir in samples_dirs])
 sample_dirs = rp.unique(sample_dirs, key=sample_dir_hash)
 
 for sample_dir in rp.eta(sample_dirs):
@@ -43,8 +46,8 @@ for sample_dir in rp.eta(sample_dirs):
             continue
 
 
-        visibles = torch.load(rp.path_join(sample_dir, "target_visibles.pth"))
-        tracks = torch.load(rp.path_join(sample_dir, "target_tracks.pth"))
+        visibles = torch.load(rp.path_join(sample_dir, "target_visibles.pth"),map_location='cpu')
+        tracks = torch.load(rp.path_join(sample_dir, "target_tracks.pth"),map_location='cpu')
         #                    ┌                                                      ┐
         #                    │┌                                             ┐       │
         #                    ││                ┌          ┐   ┌            ┐│       │
