@@ -29,7 +29,7 @@ def _validate_args(args):
 
     # The default sampling steps are 40 for image-to-video tasks and 50 for text-to-video tasks.
     if args.sample_steps is None:
-        args.sample_steps = 40
+        args.sample_steps = 10
 
     if args.sample_shift is None:
         args.sample_shift = 5.0
@@ -298,8 +298,15 @@ def generate(args):
         fl_list = yaml.safe_load(open(args.prompt))
         for line in fl_list:
             inputs_.append(
-                (line['image'], line['text'].strip(), line['track']))
+                (
+                    line["image"],
+                    line["text"].strip(),
+                    line["track"],
+                    (line["title"] if "title" in line else "[Untitled]"),
+                )
+            )
     else:
+        assert False
         inputs_ = [(args.image, args.prompt, args.track)]
 
     logging.info("Creating WanATI pipeline.")
@@ -313,8 +320,8 @@ def generate(args):
         use_usp=(args.ulysses_size > 1 or args.ring_size > 1),
         t5_cpu=args.t5_cpu,
     )
-
-    for ii, input_ in enumerate(inputs_):
+    import rp
+    for ii, input_ in rp.shuffled(list(enumerate(inputs_))):
         if args.save_file is None:
             formatted_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -331,13 +338,16 @@ def generate(args):
         else:
             save_file = args.save_file
 
+        image, prompt, tracks, title = input_
+        logging.info(f"Input prompt: {prompt}")
+        logging.info(f"Input image: {image}")
+
+        #My override
+        save_file = f'{ii:04}--{title}.mp4'
+
         if os.path.exists(save_file):
             logging.info(f"File {save_file} already exists, skipping.")
             continue
-
-        image, prompt, tracks = input_
-        logging.info(f"Input prompt: {prompt}")
-        logging.info(f"Input image: {image}")
 
         img = Image.open(image).convert("RGB")
 
