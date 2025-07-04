@@ -1,11 +1,13 @@
-samples_dir = "/home/jupyter/CleanCode/Github/DaS_Trees/gauss_blobs/source/editor/untracked/inferblobs_edit_results"
-examples_root="/home/jupyter/CleanCode/Github/ATI/ryan_examples"
-assert rp.get_current_directory() == "/home/jupyter/CleanCode/Github/ATI"
 
 import ryan_tracks_converter as rtc
 import torch
 
 import rp
+from rp import *
+
+samples_dir = "/home/jupyter/CleanCode/Github/DaS_Trees/gauss_blobs/source/editor/untracked/inferblobs_edit_results"
+examples_root="/home/jupyter/CleanCode/Github/ATI/ryan_examples"
+assert rp.get_current_directory() == "/home/jupyter/CleanCode/Github/ATI"
 
 
 @rp.squelch_wrap
@@ -34,7 +36,7 @@ for sample_dir in rp.eta(sample_dirs):
             f"- image: {repr(first_frame_path)} #Make local to repo root",
             f"  text: {repr(prompt)}",
             f"  track: {repr(tracks_path)}",
-            f"  track: {repr(title)}",
+            f"  title: {repr(title)}",
         )
         #
         if file_exists(yaml_path) and new_yaml_lines in rp.load_text_file(yaml_path):
